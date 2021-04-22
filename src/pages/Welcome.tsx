@@ -7,7 +7,7 @@ import watering from '../assets/watering.png'
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 
-// #missaoespacial - embuscadoproximonivel
+// #missaoespacial - embuscadoproximonivel - astronautas
 
 export function Welcome() {
   const navigation = useNavigation();
