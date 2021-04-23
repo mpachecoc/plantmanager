@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, FlatList, Alert } from 'react-native';
 
 import { Header } from '../components/Header';
+import { Load } from '../components/Load';
 import { PlantCardSecondary } from '../components/PlantCardSecondary';
-import { plantLoad, PlantProps } from '../libs/storage';
+import { plantLoad, PlantProps, plantRemove } from '../libs/storage';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 import waterdrop from '../assets/waterdrop.png';
@@ -34,6 +35,28 @@ export function MyPlants() {
     loadStoragedData();
   }, [])
 
+  function handleRemove(plant: PlantProps) {
+    Alert.alert('Remove', `Do you want to remove ${plant.name}?`, [
+      { text: 'No 🙏🏽', style: 'cancel' },
+      { 
+        text: 'Yes 😢', 
+        onPress: async () => {
+          try {
+            await plantRemove(plant.id);
+
+            setMyPlants(oldData => oldData.filter(oldPlant => oldPlant.id !== plant.id));
+          } catch (err) {
+            Alert.alert('😢 Something happened, please try again.')
+          }
+        } 
+      },
+    ])
+  }
+
+  if (loading) {
+    return <Load />
+  }
+
   return (
     <View style={styles.container}>
       <Header />
@@ -54,7 +77,10 @@ export function MyPlants() {
           data={myPlants}
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => (
-            <PlantCardSecondary data={item} />
+            <PlantCardSecondary
+              data={item} 
+              handleRemove={() => handleRemove(item)}
+            />
           )}
           showsVerticalScrollIndicator={false}
           // contentContainerStyle={{ flex: 1 }}

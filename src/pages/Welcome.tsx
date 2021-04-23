@@ -7,7 +7,7 @@ import watering from '../assets/watering.png'
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 
-// #missaoespacial - embuscadoproximonivel - astronautas - universoinfinito
+// #missaoespacial - embuscadoproximonivel - astronautas - universoinfinito - missaocumprida
 
 export function Welcome() {
   const navigation = useNavigation();
@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
     textAlign: 'center',
     color: colors.heading,
     marginTop: 32,
