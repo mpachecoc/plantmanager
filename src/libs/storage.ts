@@ -35,11 +35,15 @@ export async function plantSave(plant: PlantProps): Promise<void> {
     if (repeat_every === 'week') {
       const interval = Math.trunc(7 / times);
       nextTime.setDate(now.getDate() + interval);
-    // } else {
-    //   nextTime.setDate(nextTime.getDate() + 1)
+    } else {
+      nextTime.setDate(nextTime.getDate() + 1)
     }
 
     const seconds = Math.abs(Math.ceil(now.getTime() - nextTime.getTime()) / 1000); // Substract in seconds
+
+    if (!await allowsNotificationsAsync()) {
+      await requestPermissionsAsync();
+    }
 
     const notificationId = await Notifications.scheduleNotificationAsync({
       content: {
@@ -114,4 +118,22 @@ export async function plantRemove(id: string): Promise<void> {
   delete plants[id];
 
   await AsyncStorage.setItem('@plantmanager:plants', JSON.stringify(plants));
+}
+
+export async function allowsNotificationsAsync() {
+  const settings = await Notifications.getPermissionsAsync();
+  return (
+    settings.granted || settings.ios?.status === Notifications.IosAuthorizationStatus.PROVISIONAL
+  );
+}
+
+export async function requestPermissionsAsync() {
+  return await Notifications.requestPermissionsAsync({
+    ios: {
+      allowAlert: true,
+      allowBadge: true,
+      allowSound: true,
+      allowAnnouncements: true,
+    },
+  });
 }
